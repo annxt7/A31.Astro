@@ -1,0 +1,109 @@
+---
+const APIurl = "https://pokeapi.co/api/v2/pokemon?limit=151";
+
+const response = await fetch(APIurl);
+const data = await response.json();
+
+
+const pokemons = data.results.map((pokemon) => {
+
+  const id = pokemon.url.split('/').filter(Boolean).pop();
+  const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+
+  return {
+    id,
+    name: pokemon.name,
+    image,
+  };
+});
+---
+<div class='title'>
+<h1>Primera generacion de pokemon </h1>
+</div>
+<div class="pokemon-grid">
+  {pokemons.map((pokemon) => (
+    <article class="pokemon-card">
+      <div class="image-container">
+        <img 
+          src={pokemon.image} 
+          alt={`Imagen oficial de ${pokemon.name}`} 
+          loading="lazy" 
+        />
+      </div>
+      <div class="card-info">
+        <span class="pokemon-id">{pokemon.id.padStart(3, '0')}</span>
+        <h2 class="pokemon-name">{pokemon.name}</h2>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .title{
+    text-align:center;
+  }
+  .pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .pokemon-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pokemon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .image-container {
+    background-color: #f2f2f2;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image-container img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    object-fit: contain;
+    /* Efecto para que el pokemon flote un poco al hacer hover */
+    transition: transform 0.3s ease;
+  }
+
+  .pokemon-card:hover .image-container img {
+    transform: scale(1.1);
+  }
+
+  .card-info {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .pokemon-id {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .pokemon-name {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-transform: capitalize;
+  }
+</style>
